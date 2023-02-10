@@ -17,13 +17,14 @@ def show(array):
         st.markdown('---')
 
 
+test = False
+test2 = False
 def search_comments(url):
     global key_word
     global key_word2
     global test
     global test2
-    test = False
-    test2 = False
+    
     r = requests.get(url)
     soup2 = BeautifulSoup(r.text, 'html.parser')
     comments = soup2.find_all('div', id='detalle_reng_coment1')
