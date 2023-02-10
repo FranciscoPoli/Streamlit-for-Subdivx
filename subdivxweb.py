@@ -27,7 +27,7 @@ def search_comments(url):
     r = requests.get(url)
     soup2 = BeautifulSoup(r.text, 'html.parser')
     comments = soup2.find_all('div', id='detalle_reng_coment1')
-    titulo = soup2.find_all('div', id='detalle_datos')[0].find('font').text.lower()
+    #titulo = soup2.find_all('div', id='detalle_datos')[0].find('font').text.lower()
     for item2 in comments:
         comment = item2.text.lower()
         if key_word in comment and key_word2 in comment:
@@ -45,9 +45,9 @@ def search_comments(url):
             results.append([downloads, url, bold_comment])
             break
             
-        if key_word in comment or key_word in titulo:
+        if key_word in comment:
             test = True
-        if key_word2 in comment or key_word2 in titulo:
+        if key_word2 in comment:
             test2 = True
 
 
@@ -94,6 +94,8 @@ if movie:
 
     count = 0
     movie_link = ''
+    test = False
+    test2 = False
     for item in descriptions:
         description = item.text.lower()
         if key_word in description and key_word2 in description:
@@ -110,13 +112,16 @@ if movie:
             
                 
             results.append([downloads, movie_link, bold_description])
+        
+        if key_word in description:
+            test = True
+        if key_word2 in description:
+            test2 = True
 
         count += 1
 
     results.sort(key=lambda x: int(-x[0]))
     
-    test = False
-    test2 = False
     if len(results) > 0:
         with columna2:
             show(results)
