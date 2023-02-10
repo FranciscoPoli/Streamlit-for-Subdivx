@@ -17,8 +17,7 @@ def show(array):
         st.markdown('---')
 
 
-test = False
-test2 = False
+
 def search_comments(url):
     global key_word
     global key_word2
@@ -87,6 +86,9 @@ if movie:
     soup = BeautifulSoup(response.text, 'html.parser')
 
     descriptions = soup.find_all('div', id='buscador_detalle_sub')
+    if not descriptions:
+        st.warning(f'Subdivx no encuentra resultados para esa película o serie')
+        st.stop()
 
     results.clear()
 
@@ -112,7 +114,9 @@ if movie:
         count += 1
 
     results.sort(key=lambda x: int(-x[0]))
-
+    
+    test = False
+    test2 = False
     if len(results) > 0:
         with columna2:
             show(results)
@@ -132,14 +136,12 @@ if movie:
                 show(results)
 
     if len(results) == 0:
-        try:
-            if test is False and test2 is True:
-                st.warning(f'La palabra "{key_word}" no se pudo encontrar')
-            elif test is True and test2 is False:
-                st.warning(f'La palabra "{key_word2}" no se pudo encontrar')
-            elif test is False and test2 is False:
-                st.warning(f'Ninguna palabra se pudo encontrar')
-            else:
-                st.warning(f'Las 2 palabras existen pero no en la misma frase.  Intenta buscando solo una de ellas')
-        except:
-            st.warning(f'Subdivx no encuentra resultados para esa película o serie')
+        if test is False and test2 is True:
+            st.warning(f'La palabra "{key_word}" no se pudo encontrar')
+        elif test is True and test2 is False:
+            st.warning(f'La palabra "{key_word2}" no se pudo encontrar')
+        elif test is False and test2 is False:
+            st.warning(f'Ninguna palabra se pudo encontrar')
+        else:
+            st.warning(f'Las 2 palabras existen pero no en la misma frase.  Intenta buscando solo una de ellas')
+      
