@@ -4,12 +4,11 @@ import concurrent.futures
 import streamlit as st
 
 
-
 results = []
 links = []
 
 
-def show(array):
+def showResults(array):
     for item in array:
         st.write(f'Link: {item[1]}')
         st.write(f'Descripción: {item[2]}')
@@ -17,8 +16,20 @@ def show(array):
         st.markdown('---')
 
 
-
-def search_comments(url):
+def highlightGreen(key1, key2, result_text):
+    if key1 == '' and key2 == '':
+        highlighted_text = result_text
+    elif key1 == '':
+        highlighted_text = result_text.replace(f"{key_word2}",f":green[{key_word2}]")
+    elif key2 == '':
+        highlighted_text = result_text.replace(f"{key_word}",f":green[{key_word}]")
+    else:
+        highlighted_text = result_text.replace(f"{key_word}",f":green[{key_word}]").replace(f"{key_word2}",f":green[{key_word2}]")
+    
+    return highlighted_text
+            
+        
+def searchComments(url):
     global key_word
     global key_word2
     global test
@@ -28,21 +39,13 @@ def search_comments(url):
     soup2 = BeautifulSoup(r.text, 'html.parser')
     comments = soup2.find_all('div', id='detalle_reng_coment1')
     #titulo = soup2.find_all('div', id='detalle_datos')[0].find('font').text.lower()
-    for item2 in comments:
-        comment = item2.text.lower()
+    for item in comments:
+        comment = item.text.lower()
         if key_word in comment and key_word2 in comment:
             downloads = int(str(soup2.find_all('div', id='detalle_datos')[0].find_all('span')[2].text).replace(',', ''))
-            if key_word == '' and key_word2 == '':
-                bold_comment = comment
-            elif key_word == '':
-                bold_comment = comment.replace(f"{key_word2}",f":green[{key_word2}]")
-            elif key_word2 == '':
-                bold_comment = comment.replace(f"{key_word}",f":green[{key_word}]")
-            else:
-                bold_comment = comment.replace(f"{key_word}",f":green[{key_word}]").replace(f"{key_word2}",f":green[{key_word2}]")
+            green_comment = highlightGreen(key_word, key_word2, comment):
             
-            
-            results.append([downloads, url, bold_comment])
+            results.append([downloads, url, green_comment])
             break
             
         if key_word in comment:
@@ -62,7 +65,6 @@ with columnaA:
     st.write('No es obligatorio ingresar 2 palabras claves')
 
 with columna1:
-
     form = st.form(key='Buscar')
     with form:
         movie = st.text_input('Titulo de la película o serie: ').lower()
@@ -101,17 +103,9 @@ if movie:
         if key_word in description and key_word2 in description:
             movie_link = soup.find_all('a', {'class': 'titulo_menu_izq'}, href=True)[count]['href']
             downloads = int(str(soup.find_all('div', id='buscador_detalle_sub_datos')[count].find('b').next_sibling).replace(',', ''))
-            if key_word == '' and key_word2 == '':
-                bold_description = description
-            elif key_word == '':
-                bold_description = description.replace(f"{key_word2}",f":green[{key_word2}]")
-            elif key_word2 == '':
-                bold_description = description.replace(f"{key_word}",f":green[{key_word}]")
-            else:
-                bold_description = description.replace(f"{key_word}",f":green[{key_word}]").replace(f"{key_word2}",f":green[{key_word2}]")
+            green_description = highlightGreen(key_word, key_word2, description):
             
-                
-            results.append([downloads, movie_link, bold_description])
+            results.append([downloads, movie_link, green_description])
         
         if key_word in description:
             test = True
@@ -124,7 +118,7 @@ if movie:
     
     if len(results) > 0:
         with columna2:
-            show(results)
+            showResults(results)
 
     elif not movie_link:
         all_links = soup.find_all('a', {'class': 'titulo_menu_izq'}, href=True)
@@ -132,13 +126,14 @@ if movie:
             url = item['href']
             links.append(url)
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.map(search_comments, links)
+            executor.map(searchComments, links)
 
         links.clear()
         results.sort(key=lambda x: int(-x[0]))
+        
         if len(results) > 0:
             with columna2:
-                show(results)
+                showResults(results)
 
     if len(results) == 0:
         if test is False and test2 is True:
