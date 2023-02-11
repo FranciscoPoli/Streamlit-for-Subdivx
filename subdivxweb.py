@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import concurrent.futures
 import streamlit as st
+from streamlit_extras.colored_header import colored_header
 
 
 results = []
@@ -56,9 +57,11 @@ def searchComments(url):
 
 st.set_page_config(page_title='Buscador para Subdivx', layout='wide')
 
-
-st.header('Buscador de subtitulos para Subdivx.com')
-st.write('Busca tanto en descripciones como en comentarios.  No es obligatorio ingresar 2 palabras claves')
+colored_header(
+    label="Buscador de subtitulos para Subdivx.com",
+    description="Busca tanto en descripciones como en comentarios.  No es obligatorio ingresar 2 palabras claves",
+    color_name="violet-70",
+)
 
 columna1, columna2 = st.columns([1,1.5], gap="medium")
 
