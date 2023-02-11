@@ -56,13 +56,12 @@ def searchComments(url):
 
 st.set_page_config(page_title='Buscador para Subdivx', layout='wide')
 
-columnaA, columnaB = st.columns(2)
 columna1, columna2 = st.columns([1,1.5], gap="medium")
 
-with columnaA:
-    st.header('Buscador de subtitulos para Subdivx.com')
-    st.write('Busca tanto en descripciones como en comentarios.')
-    st.write('No es obligatorio ingresar 2 palabras claves')
+
+st.header('Buscador de subtitulos para Subdivx.com')
+st.write('Busca tanto en descripciones como en comentarios.  No es obligatorio ingresar 2 palabras claves')
+
 
 with columna1:
     form = st.form(key='Buscar')
