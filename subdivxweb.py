@@ -43,7 +43,7 @@ def searchComments(url):
         comment = item.text.lower()
         if key_word in comment and key_word2 in comment:
             downloads = int(str(soup2.find_all('div', id='detalle_datos')[0].find_all('span')[2].text).replace(',', ''))
-            green_comment = highlightGreen(key_word, key_word2, comment):
+            green_comment = highlightGreen(key_word, key_word2, comment)
             
             results.append([downloads, url, green_comment])
             break
@@ -103,7 +103,7 @@ if movie:
         if key_word in description and key_word2 in description:
             movie_link = soup.find_all('a', {'class': 'titulo_menu_izq'}, href=True)[count]['href']
             downloads = int(str(soup.find_all('div', id='buscador_detalle_sub_datos')[count].find('b').next_sibling).replace(',', ''))
-            green_description = highlightGreen(key_word, key_word2, description):
+            green_description = highlightGreen(key_word, key_word2, description)
             
             results.append([downloads, movie_link, green_description])
         
