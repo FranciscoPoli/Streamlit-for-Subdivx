@@ -11,6 +11,7 @@ links = []
 
 def showResults(array):
     for item in array:
+        st.write(f'Título: {item[3]}')
         st.write(f'Link: {item[1]}')
         st.write(f'Descripción: {item[2]}')
         st.write(f'Número de descargas: {item[0]}')
@@ -39,14 +40,14 @@ def searchComments(url):
     r = requests.get(url)
     soup2 = BeautifulSoup(r.text, 'html.parser')
     comments = soup2.find_all('div', id='detalle_reng_coment1')
-    #titulo = soup2.find_all('div', id='detalle_datos')[0].find('font').text.lower()
+    title = soup2.find_all('div', id='menu_titulo_buscador')[0].find('b').find('span').text
     for item in comments:
         comment = item.text.lower()
         if key_word in comment and key_word2 in comment:
             downloads = int(str(soup2.find_all('div', id='detalle_datos')[0].find_all('span')[2].text).replace(',', ''))
             green_comment = highlightGreen(key_word, key_word2, comment)
             
-            results.append([downloads, url, green_comment])
+            results.append([downloads, url, green_comment, title])
             break
             
         if key_word in comment:
@@ -58,7 +59,7 @@ def searchComments(url):
 st.set_page_config(page_title='Buscador para Subdivx', layout='wide')
 
 colored_header(
-    label="Buscador de subtitulos para Subdivx.com",
+    label="Buscador de subtítulos para Subdivx.com",
     description="Busca tanto en descripciones como en comentarios.  No es obligatorio ingresar 2 palabras claves",
     color_name="violet-70",
 )
@@ -68,7 +69,7 @@ columna1, columna2 = st.columns([1,1.5], gap="medium")
 with columna1:
     form = st.form(key='Buscar')
     with form:
-        movie = st.text_input('Titulo de la película o serie: ').lower()
+        movie = st.text_input('Título de la película o serie: ').lower()
         key_word = st.text_input('Palabra clave 1 (p. ej. 720p o 1080p): ').lower()
         key_word2 = st.text_input('Palabra clave 2 (p. ej. argenteam): ').lower()
         form.form_submit_button('Buscar')
@@ -103,10 +104,11 @@ if movie:
         description = item.text.lower()
         if key_word in description and key_word2 in description:
             movie_link = soup.find_all('a', {'class': 'titulo_menu_izq'}, href=True)[count]['href']
+            movie_title = soup.find_all('a', {'class': 'titulo_menu_izq'}, href=True)[count].text
             downloads = int(str(soup.find_all('div', id='buscador_detalle_sub_datos')[count].find('b').next_sibling).replace(',', ''))
             green_description = highlightGreen(key_word, key_word2, description)
             
-            results.append([downloads, movie_link, green_description])
+            results.append([downloads, movie_link, green_description, movie_title])
         
         if key_word in description:
             test = True
